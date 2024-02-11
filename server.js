@@ -16,9 +16,7 @@ import {
 } from "./controllers/index.js";
 
 mongoose
-  .connect(
-    "mongodb+srv://Yevhenii:ZyKaM8eVyFJSGgSi@cluster0.ezmvihc.mongodb.net/jobSearchTracker?retryWrites=true&w=majority"
-  )
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("DB ok"))
   .catch((err) => console.log("DB erorr", err));
 
@@ -101,9 +99,9 @@ app.patch(
   QuestionController.update
 );
 
-app.listen(port, (error) => {
+app.listen(process.env.PORT || 4444, (error) => {
   if (error) {
     return console.log(`Error: ${error}`);
   }
-  console.log(`Сервер запущен на порту ${port}`);
+  console.log("Server ok");
 });
