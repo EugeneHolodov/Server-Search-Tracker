@@ -15,10 +15,16 @@ import {
   QuestionController,
 } from "./controllers/index.js";
 
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("DB ok"))
-  .catch((err) => console.log("DB erorr", err));
+const connectDB = async () => {
+  try {
+      await mongoose.connect(process.env.MONGODB_CONNECT_URI)
+      console.log("Connect to MongoDB successfully")
+  } catch (error) {
+      console.log("Connect failed " + error.message )
+  }
+}
+
+connectDB()
 
 const app = express();
 
@@ -33,7 +39,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
@@ -41,7 +46,6 @@ app.use("/uploads", express.static("uploads"));
 app.get('/', (req, res) => {
   res.send('Hello, world!');
 });
-
 
 app.post(
   "/auth/login",
@@ -104,9 +108,11 @@ app.patch(
   QuestionController.update
 );
 
-app.listen(process.env.PORT || 4444, (error) => {
+const PORT = process.env.PORT;
+
+app.listen(PORT || 4444, (error) => {
   if (error) {
     return console.log(`Error: ${error}`);
   }
-  console.log("Server ok");
+  console.log("Server ok"+ PORT);
 });
