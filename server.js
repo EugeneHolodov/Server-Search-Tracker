@@ -15,16 +15,10 @@ import {
   QuestionController,
 } from "./controllers/index.js";
 
-const connectDB = async () => {
-  try {
-      await mongoose.connect(process.env.MONGODB_URI)
-      console.log("Connect to MongoDB successfully")
-  } catch (error) {
-      console.log("Connect failed " + error.message )
-  }
-}
-
-connectDB()
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("DB ok"))
+  .catch((err) => console.log("DB erorr", err));
 
 const app = express();
 
@@ -108,11 +102,10 @@ app.patch(
   QuestionController.update
 );
 
-const PORT = process.env.PORT;
 
-app.listen(PORT || 4444, (error) => {
+app.listen(process.env.PORT || 4444, (error) => {
   if (error) {
     return console.log(`Error: ${error}`);
   }
-  console.log("Server ok"+ PORT);
+  console.log("Server ok" + process.env.PORT);
 });
