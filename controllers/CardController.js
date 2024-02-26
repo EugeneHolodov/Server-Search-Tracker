@@ -2,10 +2,10 @@ import CardModel from "../models/Card.js";
 import { v4 as uuidv4 } from "uuid";
 
 export const getAll = async (req, res) => {
-  console.log("MY REQUesT",req.userId);
   try {
-    const cards = await CardModel.find({ user: req.userId }).populate("user").exec();
-    console.log("MY  cards",cards);
+    const cards = await CardModel.find({ user: req.userId })
+      .populate("user")
+      .exec();
     res.json(cards);
   } catch (error) {
     console.log(error);
@@ -60,7 +60,6 @@ export const remove = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-    
     const doc = new CardModel({
       title: req.body.title,
       description: req.body.description,
@@ -93,7 +92,7 @@ export const create = async (req, res) => {
         },
       ],
     });
-    
+
     const post = await doc.save();
     res.json(post);
   } catch (error) {
@@ -110,10 +109,9 @@ export const update = async (req, res) => {
     let updateData;
 
     if (req.body.todos) {
-      updateData = req.body.todos
-      
+      updateData = req.body.todos;
     }
-    
+
     await CardModel.updateOne(
       {
         _id: cardId,
@@ -124,17 +122,48 @@ export const update = async (req, res) => {
         expectations: req.body.expectations,
         deadline: req.body.deadline,
         state: req.body.state,
-      //user: req.userId,
+        //user: req.userId,
         todos: updateData,
       }
     );
 
-    const card = await CardModel.findOne({ _id: cardId }).populate("user").exec();;
+    const card = await CardModel.findOne({ _id: cardId })
+      .populate("user")
+      .exec();
     res.json(card);
   } catch (error) {
     console.log(error);
     res.status(500).json({
       message: "Failed to update card",
+    });
+  }
+};
+
+export const updateTodos = async (req, res) => {
+  try {
+    const cardId = req.params.id;
+    let updateData;
+    if (req.body) {
+      updateData = req.body;
+    }
+
+    await CardModel.updateOne(
+      {
+        _id: cardId,
+      },
+      {
+        todos: updateData,
+      }
+    );
+
+    const card = await CardModel.findOne({ _id: cardId })
+      .populate("user")
+      .exec();
+    res.json(card);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to update todos",
     });
   }
 };
@@ -153,7 +182,7 @@ export const updateCards = async (req, res) => {
 
       updateResults.push(result);
     }
-console.log(updateResults);
+    console.log(updateResults);
     res.json({ message: "Cards updated successfully", updateResults });
   } catch (error) {
     console.log(error);
