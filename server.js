@@ -1,7 +1,8 @@
 import express from "express";
 import multer from "multer";
 import cors from "cors";
-import mongoose from "mongoose";
+import dotenv from "dotenv";
+import connectDB from "./connectMongo.js";
 import {
   registerValidation,
   loginValidation,
@@ -14,13 +15,9 @@ import {
   CardController,
   QuestionController,
 } from "./controllers/index.js";
+dotenv.config();
 
-mongoose
-  .connect(
-    "mongodb+srv://Yevhenii:ZyKaM8eVyFJSGgSi@cluster0.ezmvihc.mongodb.net/jobSearchTracker?retryWrites=true&w=majority"
-  )
-  .then(() => console.log("DB ok"))
-  .catch((err) => console.log("DB error", err));
+connectDB();
 
 const app = express();
 
